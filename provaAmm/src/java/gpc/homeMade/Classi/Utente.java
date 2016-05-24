@@ -5,19 +5,20 @@
  */
 package gpc.homeMade.Classi;
 
-public abstract class Utente {
+public class Utente {
    
     protected int id;
-    protected String name;
-    protected String surname;
+    protected int tipo;
+    protected String nome;
+    protected String cognome;
     protected String username;
     protected String password;
     
     
     public Utente(){
         id = 0;
-        name = "";
-        surname = "";
+        nome = "";
+        cognome = "";
         username="";
         password="";
     }
@@ -27,18 +28,18 @@ public abstract class Utente {
     public void setId(int id) {
         this.id = id;
     }
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getCognome() {
+        return cognome;
     }
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
     }
 
     public String getUsername() {
@@ -55,5 +56,19 @@ public abstract class Utente {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * @return the tipo
+     */
+    public int getTipo() {
+        return tipo;
+    }
+
+    /**
+     * @param tipo the tipo to set
+     */
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
 }

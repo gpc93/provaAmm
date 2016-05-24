@@ -18,25 +18,56 @@
             <div id="nav">
                 <ul>
                     <li><a href="./descrizione.html">Descrizione</a></li>
-                    <li><a href="./login.jsp">Login</a></li>               
+                    <li><a href="Login?exit=${true}">Logout</a></li>       
+                   
                 </ul>
             </div>
             <div id="sideBar">
-                <h2>Area Personale</h2>
+                <h2>Area Area Personale dell'utente ${venditore.nome}</h2>
                 <ul>
-                        <li><a>Modifica Annuncio</a></li>
+                    <li><a href="Venditore?sceltaMenu=${"modifica"}">Modifica Annuncio</a></li>
+                    <li><a href="Venditore?sceltaMenu=${"inserisci"}">Inserisci Annuncio</a></li>
+                    
                         <li><a>Storico Vendite</a></li>
                 </ul>
             </div>
             <!--CONTENT-->
+            <div id="content"> 
+            <c:choose>
+                
+                <c:when test="${modifica.equals(true)}">
+                    <div id="objTab">
 
-            <div id="content">   
-                <h2 class="contentTitle">Aggiungi articolo</h2>
+                        <table>
+                            <tr>
+                                <th class="clientTabLarge">Foto</th>
+                                <th>Nome</th>
+                                <th>Quantit&agrave;</th>
+                                <th>Prezzo</th>
+                                <th>Modifica</th>
+                            </tr>
+                    <c:forEach var="prodotto" items="${listaProdotti}" >
+                               <tr>
+                                <td class="imgCol"><img title="${prodotto.nome}" src="${prodotto.linkFoto}" alt="${prodotto.descrizione}" class="objImg"/></td>
+                                <td>${prodotto.getNome()}</td>
+                                <td><div>${prodotto.quantita}</div></td>
+                                <td>${prodotto.getPrezzo()}</td>
+                                <td><a href="Venditore?idProdotto=${prodotto.idProdotto}"><img title="add" alt="aggiungi al carrello" src="./img/tabIcon.png" width="20" height="20"></a></td>
+                            </tr> 
+
+                    </c:forEach>
+                        </table>
+                    </div>
+                    
+                    
+                </c:when>
+                <c:when test="${formModifica.equals(true)}">
+                    <h2 class="contentTitle">Modifica articolo</h2>
                 <!--form pubblicazione articolo-->
                 
                 <div class="input_form" id="vendorContent">
                     
-                    <form method="get">
+                    <form method="post" action="Venditore">
                         <div>
                             <label for="objName">Nome dell'oggetto:
                                 <input type="text" name="objName" id="objName" placeholder="Inserire il nome del prodotto" />
@@ -50,20 +81,71 @@
                         <textarea rows="5" cols="25" name="objDescr" id="objDescr" placeholder="Inserire una descrizione del prodotto..."></textarea>
                         <div>
                             <label for="objQt">Quantit&agrave;:
-                                <input type="number" name="objQt" id="objQt"/>
+                                <input type="number" name="objQt" id="objQt" min="0"/>
                             </label>
                         </div>
                         <div>
                             <label for="objPrice">Prezzo:
-                                <input type="number" name="objPrice" id="objPrice"/>
+                                <input type="number" name="objPrice" id="objPrice" min="0" step="0.1"/>
                             </label>        
                         </div>
                         
-                            <input type="submit" class="formButton" value="Pubblica"/>
+                            <input type="submit" name="Modifica" class="formButton" value="modificaProdotto"/>
                             <input type="reset" class="formButton" value="Reset"/>
                         
                     </form>
                 </div>
+                    
+                    
+                    
+                    
+                    
+                </c:when>
+                
+                <c:when test="${inserisci.equals(true)}">
+                    <h2 class="contentTitle">Aggiungi articolo</h2>
+                <!--form pubblicazione articolo-->
+                
+                <div class="input_form" id="vendorContent">
+                    
+                    <form method="post" action="Venditore">
+                        <div>
+                            <label for="objName">Nome dell'oggetto:
+                                <input type="text" name="objName" id="objName" placeholder="Inserire il nome del prodotto" />
+                            </label>
+                        </div>
+                        <div>
+                            <label for="urlPhoto">Carica una foto:
+                                <input type="url" name="urlPhoto" id="urlPhoto" placeholder="Inserire url della foto dell'oggetto"/>
+                            </label>
+                        </div>
+                        <textarea rows="5" cols="25" name="objDescr" id="objDescr" placeholder="Inserire una descrizione del prodotto..."></textarea>
+                        <div>
+                            <label for="objQt">Quantit&agrave;:
+                                <input type="number" name="objQt" id="objQt" min="0"/>
+                            </label>
+                        </div>
+                        <div>
+                            <label for="objPrice">Prezzo:
+                                <input type="number" name="objPrice" id="objPrice" min="0" step="0.1"/>
+                            </label>        
+                        </div>
+                        
+                            <input type="submit" name="submit" class="formButton" value="Pubblica"/>
+                            <input type="reset" class="formButton" value="Reset"/>
+                        
+                    </form>
+                </div>
+                </c:when>
+                <c:otherwise>
+                    <div>Scegliere un'opzione dall'elenco a sinistra</div>
+                    
+                </c:otherwise>
+                
+                
+            </c:choose>
+              
+                
 
             </div>
             <div id="clear"></div>

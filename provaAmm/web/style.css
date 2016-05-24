@@ -181,7 +181,13 @@ ul{
     background-color: #ec7500;
     color:white;
 }
-
+.contentConferma{
+    margin-top: 40px;
+    margin-bottom:40px;
+}
+.contentConferma p{
+    text-align: center;
+}
 /*** Stile contenuto Right Bar  ***/
 
 #sideBar ul li{
@@ -206,6 +212,18 @@ ul{
 #sideBar h2{
     margin-bottom: 20px;
 }
+/**Stile messaggi d'errore' **/
+
+#loginError{
+    border: solid 2px #ec7500;
+    height: 25px;
+    line-height: 25px;
+    margin-top: 40px;
+    margin-bottom: 0px;
+    text-align: center;
+    background-color: #ffcc80;
+}
+
 
 @media only screen and (min-width: 1024px){
 #page{

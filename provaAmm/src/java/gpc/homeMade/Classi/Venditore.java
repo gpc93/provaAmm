@@ -11,7 +11,10 @@ package gpc.homeMade.Classi;
  * @author gpc
  */
 public class Venditore extends Utente {
+   
     public Venditore(){
         super();
     }
+    
+   
 }

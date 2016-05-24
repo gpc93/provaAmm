@@ -5,12 +5,15 @@
  */
 package gpc.homeMade;
 
-import gpc.homeMade.Classi.UtentiFactory;
-import gpc.homeMade.Classi.Venditore;
+import gpc.homeMade.Classi.HomeMadeFactory;
+import gpc.homeMade.Classi.Prodotto;
+
 import gpc.homeMade.Classi.Utente;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,9 +25,29 @@ import javax.servlet.http.HttpSession;
  *
  * @author gpc
  */
-@WebServlet(name = "Login", urlPatterns = {"/Login"})
+@WebServlet(name = "Login", urlPatterns = {"/Login"}, loadOnStartup=0)
 public class Login extends HttpServlet {
+    private static final String JDBC_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+    private static final String DB_CLEAN_PATH = "../../web/WEB-INF/db/ammdb";
+    private static final String DB_BUILD_PATH = "WEB-INF/db/ammdb";
+ @Override
+    public void init(){
 
+        String dbConnection = "jdbc:derby:" + this.getServletContext().getRealPath("/") + DB_BUILD_PATH;
+
+        try {
+
+            Class.forName(JDBC_DRIVER);
+
+        } catch (ClassNotFoundException ex) {
+
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        HomeMadeFactory.getInstance().setConnectionString(dbConnection);
+
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -40,34 +63,58 @@ public class Login extends HttpServlet {
         
         HttpSession session = request.getSession(true);
         
+ 
+        
+        if(session.getAttribute("loggedIn")!=null){  
+                if (request.getParameter("exit")!= null){
+                    session.invalidate();
+                    request.getRequestDispatcher("loginJSP.jsp").forward(request, response);
+                    return;
+                }
+        }
+        
         if(request.getParameter("submit") != null)
         {
             // Preleva i dati inviati
             String username = request.getParameter("username");
             String password = request.getParameter("pswd");
             
-            ArrayList<Utente> listaUtenti = UtentiFactory.getInstance().getUserList();
-            for(Utente u : listaUtenti)
-            {
-                if(u.getUsername().equals(username) &&
-                   u.getPassword().equals(password))
-                {
+            //ArrayList<Utente> listaUtenti = UtentiFactory.getInstance().getUserList();
+            //for(Utente u : listaUtenti){
+            
+            Utente u = HomeMadeFactory.getInstance().getUtente(username, password);
+            
+            
+            if(u != null){
+                //if(u.getUsername().equals(username) && u.getPassword().equals(password)){
                     session.setAttribute("loggedIn", true);
                     
-                    if(u instanceof Venditore) 
-                    {
-                        request.setAttribute("venditore", u);
-                        
+                    //if(u instanceof Venditore){
+                    if(u.getTipo()==1){                       
+                        session.setAttribute("venditore", u);
+                        session.setAttribute("venditoreLogged", true);
+                        session.setAttribute("clienteLogged", false);
+                        session.setAttribute("listaProdotti",HomeMadeFactory.getInstance().getProdottiById(u.getId()));
                         request.getRequestDispatcher("venditoreJSP.jsp").forward(request, response);
+                        return;
                     }
-                    else
-                    {
-                        request.setAttribute("cliente", u);
-                        request.getRequestDispatcher("clienteJSP.jsp").forward(request, response);  
-                    }                    
-                }
+                    else{
+                        session.setAttribute("cliente", u);
+                        session.setAttribute("clienteLogged", true);
+                        session.setAttribute("venditoreLogged", false);
+                        session.setAttribute("listaProdotti",HomeMadeFactory.getInstance().getProdotti());
+                        request.getRequestDispatcher("clienteJSP.jsp").forward(request, response);
+                        return;
+                    }
+                   
+                //}
+                
             }
+            request.setAttribute("loginError",true); 
+            request.getRequestDispatcher("loginJSP.jsp").forward(request, response);
+            return;
         }
+        
         request.getRequestDispatcher("loginJSP.jsp").forward(request, response);
  
     }
@@ -111,4 +158,8 @@ public class Login extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+   
+    
+    
+    
 }
